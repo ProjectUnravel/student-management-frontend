@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { studentsApi, attendanceApi } from '../services/api';
-import { Student, Attendance } from '../types';
+import { attendanceApi, coursesApi } from '../services/api';
+import { Student, Attendance, Course } from '../types';
 
 const AttendanceManagement = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [attendances, setAttendances] = useState<Attendance[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedStudent, setSelectedStudent] = useState('');
   
   const [loading, setLoading] = useState(false);
@@ -15,26 +17,63 @@ const AttendanceManagement = () => {
     loadData();
   }, []);
 
+  useEffect(()=>{
+    loadCourseStudents();
+  }, [selectedCourse])
+
   const loadData = async () => {
     try {
       setLoading(true);
-      const [studentsResponse, attendancesResponse] = await Promise.all([
-        studentsApi.getAll({ pageSize: 100 }),
+      const [courseResponse, attendancesResponse] = await Promise.all([
+        coursesApi.getAll({pageSize: 100}),
+        //studentsApi.getAll({ pageSize: 100 }),
         attendanceApi.getAll({ pageSize: 100 })
       ]);
 
-      if (studentsResponse.data.status && studentsResponse.data.results) {
-        setStudents(studentsResponse.data.results);
+      if(courseResponse.data.status && courseResponse.data.results){
+        setCourses(courseResponse.data.results);
       }
+
+      // if (studentsResponse.data.status && studentsResponse.data.results) {
+      //   setStudents(studentsResponse.data.results);
+      // }
+
       if (attendancesResponse.data.status && attendancesResponse.data.results) {
         setAttendances(attendancesResponse.data.results);
       }
+
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to load data');
     } finally {
       setLoading(false);
     }
   };
+
+  const loadCourseStudents = async () =>{
+    if(!selectedCourse){
+      setError('Please select a course');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+      const response = await coursesApi.getStudentOfferingCourse(selectedCourse);
+      if(response.data.status && response.data.results){
+        setSuccess('Student retrieved successfully!');
+
+        setStudents(response.data.results);
+        return;
+      }
+
+      setError(response.data.message || 'Failed to get students')
+    } catch (error: any) {
+      setError(error.response?.data?.message || 'Failed to clock in');
+    }finally{
+      setLoading(false);
+    }
+  }
 
   const handleClockIn = async () => {
     if (!selectedStudent) {
@@ -47,7 +86,7 @@ const AttendanceManagement = () => {
       setError('');
       setSuccess('');
 
-      const response = await attendanceApi.clockIn({ studentId: selectedStudent });
+      const response = await attendanceApi.clockIn({ studentId: selectedStudent, courseId: selectedCourse });
       
       if (response.data.status) {
         setSuccess('Student clocked in successfully!');
@@ -79,7 +118,7 @@ const AttendanceManagement = () => {
       setError('');
       setSuccess('');
 
-      const response = await attendanceApi.clockOut({ studentId: selectedStudent });
+      const response = await attendanceApi.clockOut({ studentId: selectedStudent, courseId: selectedCourse });
       
       if (response.data.status) {
         setSuccess('Student clocked out successfully!');
@@ -104,6 +143,16 @@ const AttendanceManagement = () => {
     // Use the student data from the attendance DTO if available
     if (attendance.student) {
       return `${attendance.student.firstName} ${attendance.student.lastName}`;
+    }
+    // Fallback to looking it up in the students array
+    const student = students.find(s => s.id === attendance.studentId);
+    return student ? `${student.firstName} ${student.lastName}` : 'Unknown Student';
+  };
+
+   const getCourse = (attendance: Attendance) => {
+    // Use the student data from the attendance DTO if available
+    if (attendance.course) {
+      return `${attendance.course.courseCode} - ${attendance.course.courseTitle}`;
     }
     // Fallback to looking it up in the students array
     const student = students.find(s => s.id === attendance.studentId);
@@ -146,6 +195,22 @@ const AttendanceManagement = () => {
         
         {error && <div className="alert alert-error">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
+
+         <div className="form-group">
+          <label htmlFor="course">Select Course</label>
+          <select
+            id="course"
+            value={selectedCourse}
+            onChange={(e) => setSelectedCourse(e.target.value)}
+          >
+            <option value="">Choose a course...</option>
+            {courses.map((course) => (
+              <option key={course.id} value={course.id}>
+                {course.courseTitle} ({course.courseCode})
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="form-group">
           <label htmlFor="student">Select Student</label>
@@ -205,6 +270,7 @@ const AttendanceManagement = () => {
             <thead>
               <tr>
                 <th>Student</th>
+                <th>Course</th>
                 <th>Clock In</th>
                 <th>Clock Out</th>
                 <th>Status</th>
@@ -214,6 +280,7 @@ const AttendanceManagement = () => {
               {getTodayAttendances().map((attendance) => (
                 <tr key={attendance.id}>
                   <td>{getStudentName(attendance)}</td>
+                  <td>{getCourse(attendance)}</td>
                   <td>{formatDateTime(attendance.clockIn)}</td>
                   <td>{formatDateTime(attendance.clockOut)}</td>
                   <td>

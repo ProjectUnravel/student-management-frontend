@@ -8,7 +8,7 @@ const AttendanceList = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [attendances, setAttendances] = useState<Attendance[]>([]);
   const [selectedStudent, setSelectedStudent] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
+  //const [dateFilter, setDateFilter] = useState('');
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -141,7 +141,7 @@ const AttendanceList = () => {
 
   const clearFilters = () => {
     setSelectedStudent('');
-    setDateFilter('');
+    //setDateFilter('');
     setPagination(prev => ({ ...prev, search: '', pageIndex: 1 }));
   };
 

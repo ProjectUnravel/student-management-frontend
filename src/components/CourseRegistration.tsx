@@ -8,9 +8,13 @@ const CourseRegistration = () => {
   const { id } = useParams();
   const isEditing = Boolean(id);
 
-  const [course, setCourse] = useState({
+  const [course, setCourse] = useState<Course>({
     courseCode: '',
     courseTitle: '',
+    id: '',
+    createdAt:'',
+    courseRegistrationCount:0,
+
   });
   
   const [loading, setLoading] = useState(false);
@@ -33,6 +37,9 @@ const CourseRegistration = () => {
         setCourse({
           courseCode: courseData.courseCode,
           courseTitle: courseData.courseTitle,
+          id: '',
+    createdAt:'',
+    courseRegistrationCount:0,
         });
       } else {
         setError(response.data.message || 'Failed to load course data');
@@ -72,6 +79,9 @@ const CourseRegistration = () => {
           setCourse({
             courseCode: '',
             courseTitle: '',
+            id: '',
+    createdAt:'',
+    courseRegistrationCount:0,
           });
         } else {
           setError(response.data.message || 'Failed to create course');

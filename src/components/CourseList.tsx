@@ -142,7 +142,7 @@ const CourseList = () => {
                   <tr key={course.id}>
                     <td>{course.courseCode}</td>
                     <td>{course.courseTitle}</td>
-                    <td>{course.courseRegistrations?.length || 0}</td>
+                    <td>{course.courseRegistrationCount}</td>
                     <td>{new Date(course.createdAt).toLocaleDateString()}</td>
                     <td>
                       <Link 

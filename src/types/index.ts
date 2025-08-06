@@ -16,6 +16,7 @@ export interface Course {
   courseTitle: string;
   createdAt: string;
   courseRegistrations?: CourseRegistration[];
+  courseRegistrationCount: number
 }
 
 export interface CourseRegistration {
@@ -34,20 +35,25 @@ export interface Attendance {
   clockOut: string | null;
   createdAt: string;
   student?: Student;
+  courseId: string;
+  course?: Course;
 }
 
 export interface ClockInRequest {
   studentId: string;
+  courseId: string;
 }
 
 export interface ClockOutRequest {
   studentId: string;
+  courseId: string;
 }
 
 export interface CreateAttendance {
   studentId: string;
   clockIn?: string | null;
   clockOut?: string | null;
+  courseId: string
 }
 
 export interface UpdateAttendance {

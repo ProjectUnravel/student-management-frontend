@@ -2,7 +2,8 @@ import axios from 'axios';
 import { Student, Course, CourseRegistration, Attendance, ClockInRequest, ClockOutRequest, CreateAttendance, UpdateAttendance } from '../types';
 import { ApiResponse, PaginationRequest } from '../types/ApiResponse';
 
-const API_BASE_URL = 'https://localhost:44318/api';
+// const API_BASE_URL = 'https://localhost:44318/api';
+const API_BASE_URL = 'http://student-portal-gateway.runasp.net/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -45,6 +46,7 @@ export const coursesApi = {
   create: (course: Omit<Course, 'id' | 'createdAt'>) => api.post<ApiResponse<Course>>('/courses', course),
   update: (id: string, course: Omit<Course, 'id' | 'createdAt'>) => api.put<ApiResponse<Course>>(`/courses/${id}`, course),
   delete: (id: string) => api.delete<ApiResponse<any>>(`/courses/${id}`),
+  getStudentOfferingCourse: (courseId: string) => api.get<ApiResponse<Student[]>>(`/courses/students/${courseId}`)
 };
 
 // Course Registrations API

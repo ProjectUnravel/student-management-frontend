@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { studentsApi } from '../services/api';
-import { Student } from '../types';
+//import { Student } from '../types';
 
 const StudentRegistration = () => {
   const navigate = useNavigate();
