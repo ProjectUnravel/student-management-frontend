@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Student, Course, CourseRegistration, Attendance, ClockInRequest, ClockOutRequest, CreateAttendance, UpdateAttendance } from '../types';
+import { Student, Course, CourseRegistration, Attendance, ClockInRequest, ClockOutRequest, CreateAttendance, UpdateAttendance, Team, CreateTeam, TeamMembers, AssignTeam, UnassignTeam } from '../types';
 import { ApiResponse, PaginationRequest } from '../types/ApiResponse';
 
 // const API_BASE_URL = 'https://localhost:44318/api';
@@ -71,6 +71,7 @@ export const courseRegistrationsApi = {
   },
   getByCourse: (courseId: string, pagination?: PaginationRequest) => {
     const params = new URLSearchParams();
+    console.log(courseId)
     if (pagination?.pageIndex) params.append('pageIndex', pagination.pageIndex.toString());
     if (pagination?.pageSize) params.append('pageSize', pagination.pageSize.toString());
     
@@ -106,3 +107,39 @@ export const attendanceApi = {
   clockIn: (request: ClockInRequest) => api.post<ApiResponse<Attendance>>('/attendance/clockin', request),
   clockOut: (request: ClockOutRequest) => api.post<ApiResponse<Attendance>>('/attendance/clockout', request),
 };
+
+export const teamApi = {
+  getAll: (pagination?: PaginationRequest) => {
+    const params = new URLSearchParams();
+    if(pagination?.pageIndex) params.append('pageIndex', pagination.pageIndex.toString());
+    if (pagination?.pageSize) params.append('pageSize', pagination.pageSize.toString());
+    if (pagination?.search) params.append('search', pagination.search);
+    if (pagination?.sortBy) params.append('sortBy', pagination.sortBy);
+    if (pagination?.sortDescending) params.append('sortDescending', pagination.sortDescending.toString());
+
+    return api.get<ApiResponse<Team[]>>(`/team?${params.toString()}`);
+
+  },
+
+  getById: (id: string) => api.get<ApiResponse<Team>>(`/team/${id}`),
+  create: (team: CreateTeam) => api.post<ApiResponse<any>>('/team', team),
+  update: (id: string, team: CreateTeam) => api.put<ApiResponse<any>>(`/team/${id}`, team),
+  delete: (id: string) => api.delete<ApiResponse<any>>(`/team/${id}`)
+}
+
+export const teamMembersApi = {
+  getAllTeamMembers: (teamId: string, pagination?: PaginationRequest) => {
+    const params = new URLSearchParams();
+    if(pagination?.pageIndex) params.append('pageIndex', pagination.pageIndex.toString());
+    if (pagination?.pageSize) params.append('pageSize', pagination.pageSize.toString());
+    if (pagination?.search) params.append('search', pagination.search);
+    if (pagination?.sortBy) params.append('sortBy', pagination.sortBy);
+    if (pagination?.sortDescending) params.append('sortDescending', pagination.sortDescending.toString());
+
+    return api.get<ApiResponse<TeamMembers>>(`/team-members/${teamId}?${params.toString()}`);
+
+  },
+
+  assign: (data: AssignTeam) => api.put<ApiResponse<any>>(`/team-members/assign`, data),
+   unassign: (data: UnassignTeam) => api.put<ApiResponse<any>>(`/team-members/unassign`, data)
+}

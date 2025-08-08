@@ -6,6 +6,9 @@ import AttendanceManagement from './components/AttendanceManagement';
 import StudentList from './components/StudentList';
 import CourseList from './components/CourseList';
 import AttendanceList from './components/AttendanceList';
+import TeamsList from './components/TeamsList';
+import TeamsEditor from './components/TeamsEditor';
+import AssignTeams from './components/AssignTeams';
 
 function Navbar() {
   const location = useLocation();
@@ -21,6 +24,16 @@ function Navbar() {
             <li>
               <Link to="/students" className={isActive('/students') ? 'active' : ''}>
                 Students
+              </Link>
+            </li>
+             <li>
+              <Link to="/teams" className={isActive('/teams') ? 'active' : ''}>
+                Teams
+              </Link>
+            </li>
+             <li>
+              <Link to="/assign-teams" className={isActive('/assign-teams') ? 'active' : ''}>
+                Assign Teams
               </Link>
             </li>
             <li>
@@ -59,12 +72,16 @@ function App() {
           <Routes>
             <Route path="/" element={<StudentList />} />
             <Route path="/students" element={<StudentList />} />
+            <Route path="/teams" element={<TeamsList />} />
+            <Route path="/teams/new" element={<TeamsEditor />} />
+            <Route path="/teams/edit/:id" element={<TeamsEditor />} />
             <Route path="/students/new" element={<StudentRegistration />} />
             <Route path="/students/edit/:id" element={<StudentRegistration />} />
             <Route path="/courses" element={<CourseList />} />
             <Route path="/courses/new" element={<CourseRegistration />} />
             <Route path="/courses/edit/:id" element={<CourseRegistration />} />
             <Route path="/course-assignment" element={<CourseAssignment />} />
+            <Route path="/assign-teams" element={<AssignTeams />} />
             <Route path="/attendance" element={<AttendanceManagement />} />
             <Route path="/attendance-list" element={<AttendanceList />} />
           </Routes>

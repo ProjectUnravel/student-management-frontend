@@ -11,6 +11,7 @@ const CourseAssignment = () => {
   
   const [selectedStudent, setSelectedStudent] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('');
+  const [viewCourseStudents, setCourseStudents] = useState('');
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,8 +30,10 @@ const CourseAssignment = () => {
   }, []);
   
   useEffect(() => {
-    loadRegistrations();
-  }, [pagination]);
+    if(viewCourseStudents)
+      loadRegistrations();
+
+  }, [viewCourseStudents, pagination]);
 
   const loadInitialData = async () => {
     try {
@@ -45,6 +48,7 @@ const CourseAssignment = () => {
       }
       if (coursesResponse.data.status && coursesResponse.data.results) {
         setCourses(coursesResponse.data.results);
+        setCourseStudents(coursesResponse.data.results[0].id);
       }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to load initial data');
@@ -55,7 +59,8 @@ const CourseAssignment = () => {
   
   const loadRegistrations = async () => {
     try {
-      const registrationsResponse = await courseRegistrationsApi.getAll(pagination);
+      // console.log(viewCourseStudents, "CourseId")
+      const registrationsResponse = await courseRegistrationsApi.getByCourse(viewCourseStudents, pagination);
       
       if (registrationsResponse.data.status && registrationsResponse.data.results) {
         setRegistrations(registrationsResponse.data.results);
@@ -109,7 +114,7 @@ const CourseAssignment = () => {
         setSuccess('Student assigned to course successfully!');
         
         // Reload registrations
-        loadRegistrations();
+        setCourseStudents(selectedCourse);
         
         // Clear form
         setSelectedStudent('');
@@ -222,6 +227,27 @@ const CourseAssignment = () => {
 
       <div className="card">
         <h2>Current Course Assignments</h2>
+
+        <form onSubmit={loadRegistrations}>
+          <div className="grid grid-2">
+            <div className="form-group">
+              <label htmlFor="student">Pick course *</label>
+              <select
+                id="team"
+                value={viewCourseStudents}
+                onChange={(e) => setCourseStudents(e.target.value)}
+                required
+              >
+                <option value="">Choose a Team...</option>
+                {courses.map((course) => (
+                  <option key={course.id} value={course.id}>
+                    {course.courseCode} - {course.courseTitle}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </form>
         
         <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <input

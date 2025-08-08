@@ -60,3 +60,31 @@ export interface UpdateAttendance {
   clockIn?: string | null;
   clockOut?: string | null;
 }
+
+export  interface Team{
+  id: string;
+  name: string;
+  description?: string | null;
+  createdAt: string;
+}
+
+export interface TeamMembers{
+  team: Team;
+  members: Student[]
+}
+
+export interface CreateTeam{
+  name: string;
+  description: string
+}
+
+export interface AssignTeam{
+  teamId: string;
+  studentId: string;
+}
+
+
+export interface UnassignTeam{
+  teamId: string;
+  studentId: string;
+}
