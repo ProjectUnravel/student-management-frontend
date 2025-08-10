@@ -81,7 +81,7 @@ const TeamsList = () => {
         return (
     <div>
       <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <div className="card-header">
           <h2>Teams</h2>
           <Link to="/teams/new" className="btn btn-primary">
             Add New Team
@@ -90,7 +90,7 @@ const TeamsList = () => {
 
         {error && <div className="alert alert-error">{error}</div>}
 
-        <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="search-controls">
           <input
             type="text"
             placeholder="Search teams..."
@@ -105,56 +105,60 @@ const TeamsList = () => {
           <p>No teams found. <Link to="/teams/new">Add the first team</Link></p>
         ) : (
           <>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>
-                    <button 
-                      onClick={() => handleSort('name')} 
-                      className="btn-link"
-                      style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      Name {pagination.sortBy === 'name' && (pagination.sortDescending ? '↓' : '↑')}
-                    </button>
-                  </th>
-                  <th>Description</th>
-                  <th>
-                    <button 
-                      onClick={() => handleSort('createdAt')} 
-                      className="btn-link"
-                      style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      CreatedOn {pagination.sortBy === 'createdAt' && (pagination.sortDescending ? '↓' : '↑')}
-                    </button>
-                  </th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-            <tbody>
-              {teams.map((team) => (
-                <tr key={team.id}>
-                  <td>{team.name}</td>
-                  <td>{team.description}</td>
-                  <td>{new Date(team.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <Link 
-                      to={`/teams/edit/${team.id}`} 
-                      className="btn btn-primary"
-                      style={{ marginRight: '0.5rem' }}
-                    >
-                      Edit
-                    </Link>
-                    <button 
-                      onClick={() => handleDelete(team.id)}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            </table>
+            <div className="mobile-scroll-hint">
+              📱 Swipe left to see more columns
+            </div>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>
+                      <button 
+                        onClick={() => handleSort('name')} 
+                        className="btn-link"
+                      >
+                        Name {pagination.sortBy === 'name' && (pagination.sortDescending ? '↓' : '↑')}
+                      </button>
+                    </th>
+                    <th>Description</th>
+                    <th>
+                      <button 
+                        onClick={() => handleSort('createdAt')} 
+                        className="btn-link"
+                      >
+                        CreatedOn {pagination.sortBy === 'createdAt' && (pagination.sortDescending ? '↓' : '↑')}
+                      </button>
+                    </th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teams.map((team) => (
+                    <tr key={team.id}>
+                      <td>{team.name}</td>
+                      <td>{team.description || 'N/A'}</td>
+                      <td>{new Date(team.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <div className="btn-group">
+                          <Link 
+                            to={`/teams/edit/${team.id}`} 
+                            className="btn btn-primary"
+                          >
+                            Edit
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(team.id)}
+                            className="btn btn-danger"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             
             {metaData && <Pagination metaData={metaData} onPageChange={handlePageChange} />}
           </>

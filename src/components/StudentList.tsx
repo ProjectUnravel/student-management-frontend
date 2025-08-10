@@ -79,7 +79,7 @@ const StudentList = () => {
   return (
     <div>
       <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <div className="card-header">
           <h2>Students</h2>
           <Link to="/students/new" className="btn btn-primary">
             Add New Student
@@ -88,7 +88,7 @@ const StudentList = () => {
 
         {error && <div className="alert alert-error">{error}</div>}
 
-        <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="search-controls">
           <input
             type="text"
             placeholder="Search students..."
@@ -103,68 +103,71 @@ const StudentList = () => {
           <p>No students found. <Link to="/students/new">Add the first student</Link></p>
         ) : (
           <>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>
-                    <button 
-                      onClick={() => handleSort('firstName')} 
-                      className="btn-link"
-                      style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      Name {pagination.sortBy === 'firstName' && (pagination.sortDescending ? '↓' : '↑')}
-                    </button>
-                  </th>
-                  <th>
-                    <button 
-                      onClick={() => handleSort('email')} 
-                      className="btn-link"
-                      style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      Email {pagination.sortBy === 'email' && (pagination.sortDescending ? '↓' : '↑')}
-                    </button>
-                  </th>
-                  <th>Phone</th>
-                  <th>Gender</th>
-                  <th>
-                    <button 
-                      onClick={() => handleSort('createdAt')} 
-                      className="btn-link"
-                      style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      Registered {pagination.sortBy === 'createdAt' && (pagination.sortDescending ? '↓' : '↑')}
-                    </button>
-                  </th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-            <tbody>
-              {students.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.firstName} {student.lastName}</td>
-                  <td>{student.email}</td>
-                  <td>{student.phoneNumber || 'N/A'}</td>
-                  <td>{student.gender}</td>
-                  <td>{new Date(student.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <Link 
-                      to={`/students/edit/${student.id}`} 
-                      className="btn btn-primary"
-                      style={{ marginRight: '0.5rem' }}
-                    >
-                      Edit
-                    </Link>
-                    <button 
-                      onClick={() => handleDelete(student.id)}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            </table>
+            <div className="mobile-scroll-hint">
+              📱 Swipe left to see more columns
+            </div>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>
+                      <button 
+                        onClick={() => handleSort('firstName')} 
+                        className="btn-link"
+                      >
+                        Name {pagination.sortBy === 'firstName' && (pagination.sortDescending ? '↓' : '↑')}
+                      </button>
+                    </th>
+                    <th>
+                      <button 
+                        onClick={() => handleSort('email')} 
+                        className="btn-link"
+                      >
+                        Email {pagination.sortBy === 'email' && (pagination.sortDescending ? '↓' : '↑')}
+                      </button>
+                    </th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>
+                      <button 
+                        onClick={() => handleSort('createdAt')} 
+                        className="btn-link"
+                      >
+                        Registered {pagination.sortBy === 'createdAt' && (pagination.sortDescending ? '↓' : '↑')}
+                      </button>
+                    </th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map((student) => (
+                    <tr key={student.id}>
+                      <td>{student.firstName} {student.lastName}</td>
+                      <td>{student.email}</td>
+                      <td>{student.phoneNumber || 'N/A'}</td>
+                      <td>{student.gender}</td>
+                      <td>{new Date(student.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <div className="btn-group">
+                          <Link 
+                            to={`/students/edit/${student.id}`} 
+                            className="btn btn-primary"
+                          >
+                            Edit
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(student.id)}
+                            className="btn btn-danger"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             
             {metaData && <Pagination metaData={metaData} onPageChange={handlePageChange} />}
           </>

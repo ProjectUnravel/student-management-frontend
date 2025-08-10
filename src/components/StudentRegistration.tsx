@@ -185,17 +185,18 @@ const StudentRegistration = () => {
         </div>
 
         <div className="form-group">
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Saving...' : isEditing ? 'Update Student' : 'Register Student'}
-          </button>
-          <button 
-            type="button" 
-            className="btn btn-secondary" 
-            onClick={() => navigate('/students')}
-            style={{ marginLeft: '1rem' }}
-          >
-            Cancel
-          </button>
+          <div className="btn-group">
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? 'Saving...' : isEditing ? 'Update Student' : 'Register Student'}
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              onClick={() => navigate('/students')}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </div>

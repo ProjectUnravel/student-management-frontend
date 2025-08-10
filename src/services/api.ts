@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Student, Course, CourseRegistration, Attendance, ClockInRequest, ClockOutRequest, CreateAttendance, UpdateAttendance, Team, CreateTeam, TeamMembers, AssignTeam, UnassignTeam } from '../types';
+import { Student, Course, CourseRegistration, Attendance, ClockInRequest, ClockOutRequest, CreateAttendance, UpdateAttendance, Team, CreateTeam, TeamMembers, AssignTeam, UnassignTeam, Task, CreateTask, UpdateTask, TaskScore, CreateTaskScore, UpdateTaskScore } from '../types';
 import { ApiResponse, PaginationRequest } from '../types/ApiResponse';
 
 // const API_BASE_URL = 'https://localhost:44318/api';
@@ -143,3 +143,45 @@ export const teamMembersApi = {
   assign: (data: AssignTeam) => api.put<ApiResponse<any>>(`/team-members/assign`, data),
    unassign: (data: UnassignTeam) => api.put<ApiResponse<any>>(`/team-members/unassign`, data)
 }
+
+// Tasks API
+export const tasksApi = {
+  getAll: (pagination?: PaginationRequest) => {
+    const params = new URLSearchParams();
+    if (pagination?.pageIndex) params.append('page', pagination.pageIndex.toString());
+    if (pagination?.pageSize) params.append('pageSize', pagination.pageSize.toString());
+    if (pagination?.search) params.append('search', pagination.search);
+    if (pagination?.sortBy) params.append('sortBy', pagination.sortBy);
+    if (pagination?.sortDescending) {
+      params.append('sortOrder', pagination.sortDescending ? 'desc' : 'asc');
+    }
+    
+    return api.get<ApiResponse<Task[]>>(`/task?${params.toString()}`);
+  },
+  getById: (id: string) => api.get<ApiResponse<Task>>(`/task/${id}`),
+  create: (task: CreateTask) => api.post<ApiResponse<Task>>('/task', task),
+  update: (id: string, task: UpdateTask) => api.put<ApiResponse<Task>>(`/task/${id}`, task),
+  delete: (id: string) => api.delete<ApiResponse<any>>(`/task/${id}`),
+};
+
+// Task Scores API
+export const taskScoresApi = {
+  getAll: (pagination?: PaginationRequest & { taskId?: string; studentId?: string }) => {
+    const params = new URLSearchParams();
+    if (pagination?.pageIndex) params.append('page', pagination.pageIndex.toString());
+    if (pagination?.pageSize) params.append('pageSize', pagination.pageSize.toString());
+    if (pagination?.search) params.append('search', pagination.search);
+    if (pagination?.sortBy) params.append('sortBy', pagination.sortBy);
+    if (pagination?.sortDescending) {
+      params.append('sortOrder', pagination.sortDescending ? 'desc' : 'asc');
+    }
+    if (pagination?.taskId) params.append('taskId', pagination.taskId);
+    if (pagination?.studentId) params.append('studentId', pagination.studentId);
+    
+    return api.get<ApiResponse<TaskScore[]>>(`/taskscore?${params.toString()}`);
+  },
+  getById: (id: string) => api.get<ApiResponse<TaskScore>>(`/taskscore/${id}`),
+  create: (taskScore: CreateTaskScore) => api.post<ApiResponse<TaskScore>>('/taskscore', taskScore),
+  update: (id: string, taskScore: UpdateTaskScore) => api.put<ApiResponse<TaskScore>>(`/taskscore/${id}`, taskScore),
+  delete: (id: string) => api.delete<ApiResponse<any>>(`/taskscore/${id}`),
+};
