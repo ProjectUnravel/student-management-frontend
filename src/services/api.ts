@@ -3,7 +3,7 @@ import { Student, Course, CourseRegistration, Attendance, ClockInRequest, ClockO
 import { ApiResponse, PaginationRequest } from '../types/ApiResponse';
 
 // const API_BASE_URL = 'https://localhost:44318/api';
-const API_BASE_URL = 'http://student-portal-gateway.runasp.net/api';
+const API_BASE_URL = 'https://student-portal-gateway.runasp.net/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

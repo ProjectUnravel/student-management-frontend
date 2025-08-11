@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://student-portal-gateway.runasp.net',
+        target: 'https://student-portal-gateway.runasp.net',
         // target: 'https://localhost:44318',
         changeOrigin: true,
         secure: false,
