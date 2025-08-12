@@ -202,6 +202,7 @@ const AttendanceList = () => {
           <p>No attendance records found.</p>
         ) : (
           <>
+          <div className="table-container">
             <table className="table">
               <thead>
                 <tr>
@@ -275,7 +276,7 @@ const AttendanceList = () => {
                 ))}
               </tbody>
             </table>
-            
+          </div>
             {metaData && <Pagination metaData={metaData} onPageChange={handlePageChange} />}
           </>
         )}
