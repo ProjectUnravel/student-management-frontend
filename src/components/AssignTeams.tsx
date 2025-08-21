@@ -225,7 +225,7 @@ const AssignTeams = () => {
       <div className="card">
         <h2>Current Team Assignments</h2>
 
-        <form onSubmit={loadRegistrations}>
+        <form onSubmit={loadRegistrations}>qq
           <div className="grid grid-2">
             <div className="form-group">
               <label htmlFor="student">Pick team *</label>
@@ -262,7 +262,7 @@ const AssignTeams = () => {
         ) : (
           <>
           <div>
-            <p>Team {teamMembers.team.name}</p>
+            <h4>Team {teamMembers.team.name} ({teamMembers.members.length})</h4>
           </div>
             <table className="table">
               <thead>

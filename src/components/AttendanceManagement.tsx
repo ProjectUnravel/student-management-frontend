@@ -165,10 +165,13 @@ const AttendanceManagement = () => {
   };
 
   const isStudentClockedIn = (studentId: string) => {
+    let currentDate =  new Date().toISOString().split("T")[0];
     return attendances.some(att => 
       att.studentId === studentId && 
       att.clockIn && 
-      !att.clockOut
+      !att.clockOut &&
+      att.createdAt.split("T")[0] === currentDate &&
+      att.courseId === selectedCourse
     );
   };
 
